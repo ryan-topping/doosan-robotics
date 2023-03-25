@@ -1,5 +1,5 @@
-"""A series of useful utilities for programming a Doosan robot with Doosan
-Robotics Language (DRL)."""
+'''A series of useful utilities for programming a Doosan robot with Doosan
+Robotics Language (DRL).'''
 from itertools import chain, islice
 from DRL.DRL import *
 
@@ -23,7 +23,7 @@ __solution_space_table__ = '''
 
 
 def rotated(iterable, start_index):
-    """Rotate an iterable about a starting index.
+    '''Rotate an iterable about a starting index.
     
     Arguments:
       iterable: an iterable object.
@@ -31,13 +31,13 @@ def rotated(iterable, start_index):
       
     Returns:
       A chain object.
-    """
+    '''
     _iterable = iter(iterable)
     next(islice(_iterable, start_index, start_index), None)
     return chain(_iterable, islice(iterable, start_index))
 
 def get_minimum_posj_from_posx(target, current=None, ref=DR_BASE):
-    """Find the joint position which requires the minimum joint movement to
+    '''Find the joint position which requires the minimum joint movement to
     achieve a target task position.
     
     Arguments:
@@ -48,7 +48,7 @@ def get_minimum_posj_from_posx(target, current=None, ref=DR_BASE):
       
     Returns:
       posj
-    """
+    '''
     if current is None:
         current = get_current_posj()
     sums = [sum(abs(a - b) for a, b in zip(current, ikin(target, sol_space, ref)))
@@ -56,7 +56,7 @@ def get_minimum_posj_from_posx(target, current=None, ref=DR_BASE):
     return ikin(target, sums.index(min(sums)), ref)
 
 def check_joint_limits(pos, joint_limits):
-    """Check if a joint position exceeds the joint limits.
+    '''Check if a joint position exceeds the joint limits.
     
     Arguments:
       pos: posj joint position.
@@ -64,14 +64,14 @@ def check_joint_limits(pos, joint_limits):
       
     Returns:
       bool.
-    """
+    '''
     for joint, (lower_limit, upper_limit) in zip(pos, joint_limits):
         if not lower_limit < joint < upper_limit:
             return False
     return True
 
 def matmul(A, B):
-    """Multiply two matricies.
+    '''Multiply two matricies.
     
     Arguments:
       A: 2D Matrix.
@@ -79,5 +79,5 @@ def matmul(A, B):
       
     Returns:
       2D Matrix.
-    """
+    '''
     return [[sum(a*b for a, b in zip(A_row, B_col)) for B_col in zip(*B)] for A_row in A]
