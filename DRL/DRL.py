@@ -36,6 +36,26 @@ DR_MV_ORI_RADIAL = 2
 DR_MVS_VEL_NONE = 0
 DR_MVS_VEL_CONST = 1
 
+# Axis
+DR_AXIS_X = 0
+DR_AXIS_Y = 1
+DR_AXIS_Z = 2
+
+# Check motion state
+DR_STATE_IDLE = 0   # no motion in action
+DR_STATE_INIT = 1   # motion being calculated
+DR_STATE_BUSY = 2   # motion in operation
+
+# Target home position
+DR_HOME_TARGET_MECHANIC = 0
+DR_HOME_TARGET_USER = 1
+
+# Stop mode
+DR_QSTOP_STO = 0    # Quick stop (category 1) without STO (safe torque off)
+DR_QSTOP = 1        # Quick stop (category 2)
+DR_SSTOP = 2        # Soft stop
+DR_HOLD = 3         # HOLE stop
+
 # Message type
 DR_PM_MESSAGE = 0
 DR_PM_WARNING = 1
@@ -167,10 +187,10 @@ def set_tcp(name: str) -> int:
     and sets it as the current TCP.
 
     Parameters:
-        name (string): Name of the TCP registered in the TP
+        - name (string): Name of the TCP registered in the TP
     
     Returns:
-        value (int): 0 = Success, -value = Failed
+        - value (int): 0 = Success, negative value = Failed
     '''
 def set_ref_coord(coord: int) -> int: ...
 def movej(pos: Union[posj, list[float]],
@@ -300,25 +320,162 @@ def movesx(pos_list: list[posx],
            ref: Optional[int] = None,
            mod: int = DR_MV_MOD_ABS,
            vel_opt: int = DR_MVS_VEL_NONE) -> int: ...
-def moveb(): ...
-def move_spiral(): ...
-def move_periodic(): ...
-def move_home(): ...
-def amovej(): ...
-def amovel(): ...
-def amovejx(): ...
-def amovec(): ...
-def amovesj(): ...
-def amovesx(): ...
-def amoveb(): ...
-def amove_spiral(): ...
-def amove_periodic(): ...
-def mwait(): ...
-def begin_blend(): ...
-def end_blend(): ...
-def check_motion(): ...
-def stop(): ...
-def change_operation_speed(): ...
+def moveb(pos_list: list[posb],
+          *,
+          vel: Optional[Union[float, list[float]]] = None,
+          v: Optional[Union[float, list[float]]] = None,
+          acc: Optional[Union[float, list[float]]] = None,
+          a: Optional[Union[float, list[float]]] = None,
+          time: Optional[float] = None,
+          t: Optional[float] = None,
+          ref: Optional[int] = None,
+          mod: int = DR_MV_MOD_ABS,
+          app_type: int = DR_MV_APP_NONE) -> int: ...
+def move_spiral(rev: float = 10.0,
+                rmax: float = 10.0,
+                lmax: float = 0.0,
+                vel: Optional[float] = None,
+                v: Optional[float] = None,
+                acc: Optional[float] = None,
+                a: Optional[float] = None,
+                time: Optional[float] = None,
+                t: Optional[float] = None,
+                axis: int = DR_AXIS_Z,
+                ref: int = DR_TOOL) -> int: ...
+def move_periodic(amp: list[float],
+                  period: Union[float, list[float]],
+                  atime: float = 0.0,
+                  repeat: int = 1,
+                  ref: int = DR_TOOL) -> int: ...
+def move_home(target: int) -> int: ...
+def amovej(pos: Union[posj, list[float]],
+           *,
+           vel: Optional[Union[float, list[float]]] = None,
+           v: Optional[Union[float, list[float]]] = None,
+           acc: Optional[Union[float, list[float]]] = None,
+           a: Optional[Union[float, list[float]]] = None,
+           time: Optional[float] = None,
+           t: Optional[float] = None,
+           radius: Optional[float] = None,
+           r: Optional[float] = None,
+           mod: int = DR_MV_MOD_ABS,
+           ra: int = DR_MV_RA_DUPLICATE) -> int: ...
+def amovel(pos: Union[posx, list[float]],
+           *,
+           vel: Optional[Union[float, list[float]]] = None,
+           v: Optional[Union[float, list[float]]] = None,
+           acc: Optional[Union[float, list[float]]] = None,
+           a: Optional[Union[float, list[float]]] = None,
+           time: Optional[float] = None,
+           t: Optional[float] = None,
+           radius: Optional[float] = None,
+           r: Optional[float] = None,
+           ref: Optional[int] = None,
+           mod: int = DR_MV_MOD_ABS,
+           ra: int = DR_MV_RA_DUPLICATE,
+           app_type: int = DR_MV_APP_NONE) -> int: ...
+def amovejx(pos: Union[posx, list[float]],
+            *,
+            vel: Optional[Union[float, list[float]]] = None,
+            v: Optional[Union[float, list[float]]] = None,
+            acc: Optional[Union[float, list[float]]] = None,
+            a: Optional[Union[float, list[float]]] = None,
+            time: Optional[float] = None,
+            t: Optional[float] = None,
+            radius: Optional[float] = None,
+            r: Optional[float] = None,
+            ref: Optional[int] = None,
+            mod: int = DR_MV_MOD_ABS,
+            ra: int = DR_MV_RA_DUPLICATE,
+            sol: int = 0) -> int: ...
+def amovec(pos: Union[posx, list[float]],
+           pos2: Union[posx, list[float]],
+           *,
+           vel: Optional[Union[float, list[float]]] = None,
+           v: Optional[Union[float, list[float]]] = None,
+           acc: Optional[Union[float, list[float]]] = None,
+           a: Optional[Union[float, list[float]]] = None,
+           time: Optional[float] = None,
+           t: Optional[float] = None,
+           radius: Optional[float] = None,
+           r: Optional[float] = None,
+           ref: Optional[int] = None,
+           mod: int = DR_MV_MOD_ABS,
+           angle: Optional[Union[float, list[float]]] = None,
+           an: Optional[Union[float, list[float]]] = None,
+           ra: int = DR_MV_RA_DUPLICATE,
+           ori: int = DR_MV_ORI_TEACH,
+           app_type: int = DR_MV_APP_NONE) -> int: ...
+def amovesj(pos_list: list[posj],
+            *,
+            vel: Optional[float] = None,
+            v: Optional[float] = None,
+            acc: Optional[float] = None,
+            a: Optional[float] = None,
+            time: Optional[float] = None,
+            t: Optional[float] = None,
+            mod: int = DR_MV_MOD_ABS) -> int: ...
+def amovesx(pos_list: list[posx],
+            *,
+            vel: Optional[Union[float, list[float]]] = None,
+            v: Optional[Union[float, list[float]]] = None,
+            acc: Optional[Union[float, list[float]]] = None,
+            a: Optional[Union[float, list[float]]] = None,
+            time: Optional[float] = None,
+            t: Optional[float] = None,
+            ref: Optional[int] = None,
+            mod: int = DR_MV_MOD_ABS,
+            vel_opt: int = DR_MVS_VEL_NONE) -> int: ...
+def amoveb(pos_list: list[posb],
+           *,
+           vel: Optional[Union[float, list[float]]] = None,
+           v: Optional[Union[float, list[float]]] = None,
+           acc: Optional[Union[float, list[float]]] = None,
+           a: Optional[Union[float, list[float]]] = None,
+           time: Optional[float] = None,
+           t: Optional[float] = None,
+           ref: Optional[int] = None,
+           mod: int = DR_MV_MOD_ABS,
+           app_type: int = DR_MV_APP_NONE) -> int: ...
+def amove_spiral(rev: float = 10.0,
+                 rmax: float = 10.0,
+                 lmax: float = 0.0,
+                 vel: Optional[float] = None,
+                 v: Optional[float] = None,
+                 acc: Optional[float] = None,
+                 a: Optional[float] = None,
+                 time: Optional[float] = None,
+                 t: Optional[float] = None,
+                 axis: int = DR_AXIS_Z,
+                 ref: int = DR_TOOL) -> int: ...
+def amove_periodic(amp: list[float],
+                   period: Union[float, list[float]],
+                   atime: float = 0.0,
+                   repeat: int = 1,
+                   ref: int = DR_TOOL) -> int: ...
+def mwait(time: float) -> int: ...
+def begin_blend(radius: float = 0.0) -> int: ...
+def end_blend() -> int: ...
+def check_motion() -> int: ...
+def stop(st_mode: int) -> int: ...
+def change_operation_speed(speed: int) -> int:
+    '''This function adjusts the operation velocity. The argument is the
+    relative velocity in a percentage of the currently set velocity and has a 
+    value from 1 to 100. Therefore, a value of 50 means that the velocity is
+    to 50% of the currently set velocity.
+
+    Parameters:
+        - speed (int): operation speed (10~100)
+
+    Returns:
+        - value (int): 0 = Success, negative value = Failed
+    
+    Exception:
+        - DR_Error (DR_ERROR_TYPE): Parameter data type error occured.
+        - DR_Error (DR_ERROR_VALUE): Parameter value is invalid.
+        - DR_Error (DR_ERROR_RUNTIME): C extension module error occured.
+        - DR_Error (ER_ERROR_STOP): Program terminated forcefully.
+    '''
 def wait_manual_guide(): ...
 def wait_nudge(): ...
 def enable_alter_motion(): ...
@@ -334,13 +491,13 @@ def inverse_pose(posx1: posx) -> posx:
     '''This function returns the posx value that represents the inverse of posx.
 
     Parameters:
-        posx1 (posx | list[6 floats]): position
+        - posx1 (posx | list[6 floats]): position
 
     Returns:
-        position (posx): inverse position.
+        - position (posx): inverse position.
 
     Exception:
-        DR_Error (DR_ERROR_TYPE): Parameter data type error occured.
+        - DR_Error (DR_ERROR_TYPE): Parameter data type error occured.
     '''
 
 # Auxilliary Control Commands
@@ -545,34 +702,34 @@ def tp_log(message: str) -> int:
     '''This function records the user-written log to the teach pendant.
 
     Parameters:
-        message (str): Message provided to the user; limit 256 bytes.
+        - message (str): Message provided to the user; limit 256 bytes.
 
     Returns:
-        value (int): 0 = Success, -value = Failed.
+        - value (int): 0 = Success, negative value = Failed.
 
     Exception:
-        DR_Error (DR_ERROR_TYPE): Parameter data type error occured.
-        DR_Error (DR_ERROR_VALUE): Parameter value is invalid.
-        DR_Error (DR_ERROR_RUNTIME): C extension module error occured.
-        DR_Error (ER_ERROR_STOP): Program terminated forcefully.
+        - DR_Error (DR_ERROR_TYPE): Parameter data type error occured.
+        - DR_Error (DR_ERROR_VALUE): Parameter value is invalid.
+        - DR_Error (DR_ERROR_RUNTIME): C extension module error occured.
+        - DR_Error (ER_ERROR_STOP): Program terminated forcefully.
     '''
 def tp_get_user_input(message: str, 
                       input_type: int) -> Union[int, float, str, bool]:
     '''This function receives the user input data through the Teach Pendant.
     
     Parameters:
-        message (str): Character string message to be displayed on the TP user
+        - message (str): Character string message to be displayed on the TP user
         input window.
-        input_type (int): TP user input message type
+        - input_type (int): TP user input message type
 
     Returns:
-        data (int or float or str or bool): user input data received from the TP.
+        - data (int or float or str or bool): user input data received from the TP.
 
     Exception:
-        DR_Error (DR_ERROR_TYPE): Parameter data type error occured.
-        DR_Error (DR_ERROR_VALUE): Parameter value is invalid.
-        DR_Error (DR_ERROR_RUNTIME): C extension module error occured.
-        DR_Error (ER_ERROR_STOP): Program terminated forcefully.
+        - DR_Error (DR_ERROR_TYPE): Parameter data type error occured.
+        - DR_Error (DR_ERROR_VALUE): Parameter value is invalid.
+        - DR_Error (DR_ERROR_RUNTIME): C extension module error occured.
+        - DR_Error (ER_ERROR_STOP): Program terminated forcefully.
     '''
 # 7.3 Thread
 def thread_run(th_func_name,
@@ -587,10 +744,10 @@ def wait(time: int) -> int:
     '''This functionw aits for the specified time.
 
     Parameters:
-        time (float): time in seconds.
+        - time (float): time in seconds.
 
     Returns:
-        value (int): 0 = Success, -value = Failed.
+        - value (int): 0 = Success, negative value = Failed.
     '''
 def exit(): ...
 def sub_program_run(name): ...
@@ -611,11 +768,11 @@ def drl_report_line(option: int) -> None:
     - Brake Point in Debug mode
 
     Parameters:
-        option (int):   Whether to display the DRL execution line
-          ON(1), OFF(0)
+        - option (int):   Whether to display the DRL execution line
+        ON(1), OFF(0)
     
     Returns:
-        None
+        - None
     '''
 def set_fm(key,
            value): ...
@@ -691,12 +848,12 @@ def serial_open(port: Optional[str] = None,
         DR_STOPBITS_ONE, DR_STOPBITS_ONE_POINT_FIVE, DR_STOPBITS_TWO.
         
     Returns:
-        serial.Serial instance.
+        - serial.Serial instance.
 
     Exceptions:
-        DR_Error (DR_ERROR_TYPE): Parameter data type error occured.
-        DR_Error (DR_ERROR_VALUE): Parameter value is invalid.
-        DR_Error (DR_ERROR_RUNTIME): Serial.SerialException error occurred.
+        - DR_Error (DR_ERROR_TYPE): Parameter data type error occured.
+        - DR_Error (DR_ERROR_VALUE): Parameter value is invalid.
+        - DR_Error (DR_ERROR_RUNTIME): Serial.SerialException error occurred.
     '''
 # 9.2 TCP/Client
 
