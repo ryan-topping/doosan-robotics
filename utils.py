@@ -45,10 +45,11 @@ def get_minimum_posj_from_posx(target, current = None, ref = DR_BASE):
     achieve a target task position.
     
     Parameters:
-        - target: posx position.
-        - current: posj position or None, default=None. If None the current 
-        position is calculated.
-        - ref: DR reference constant, default=DR_BASE.
+        - target (posx): Target task position.
+        - current (posj): Start position or None, default=None. If None the 
+        current position is calculated.
+        - ref (int): DR reference constant, default=DR_BASE, other options are
+        DR_WORLD, and user coordinate index.
       
     Returns:
         - position (posj): joint position
@@ -92,7 +93,7 @@ def matmul(A, B):
     Returns:
         - matrix (list of lists): 2D Matrix of size A-rows x B-cols.
 
-    Exceptions:
+    Exception:
         - ValueError: If A and B are not array-like and their dimensions do not 
         conform to the rules of matrix multiplication a ValueError is raised.
     '''
