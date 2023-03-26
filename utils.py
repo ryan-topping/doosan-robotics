@@ -25,59 +25,89 @@ __solution_space_table__ = '''
 def rotated(iterable, start_index):
     '''Rotate an iterable about a starting index.
     
-    Arguments:
-      iterable: an iterable object.
-      start_index: an integer value.
+    Parameters:
+        - iterable (iterable): an iterable object with integer elements.
+        - start_index (int): an integer value.
       
     Returns:
-      A chain object.
+        - object (chain): A chain object.
+    
+    Example:
+        rotated([0, 1, 2, 3], 2) -> chain([2, 3], [0, 1])
     '''
     _iterable = iter(iterable)
     next(islice(_iterable, start_index, start_index), None)
+    
     return chain(_iterable, islice(iterable, start_index))
 
-def get_minimum_posj_from_posx(target, current=None, ref=DR_BASE):
+def get_minimum_posj_from_posx(target, current = None, ref = DR_BASE):
     '''Find the joint position which requires the minimum joint movement to
     achieve a target task position.
     
-    Arguments:
-      target: posx position.
-      current: posj position or None, default=None. If None the current position
-        is calculated.
-      ref: DR reference constant, default=DR_BASE.
+    Parameters:
+        - target: posx position.
+        - current: posj position or None, default=None. If None the current 
+        position is calculated.
+        - ref: DR reference constant, default=DR_BASE.
       
     Returns:
-      posj
+        - position (posj): joint position
     '''
     if current is None:
         current = get_current_posj()
-    sums = [sum(abs(a - b) for a, b in zip(current, ikin(target, sol_space, ref)))
-            for sol_space in SOLUTION_SPACES]
+
+    sums = [sum(abs(a - b) for a, b in zip(current, ikin(target, solution, ref)))
+            for solution in SOLUTION_SPACES]
+    
     return ikin(target, sums.index(min(sums)), ref)
 
-def check_joint_limits(pos, joint_limits):
+def check_joint_limits(joint_position, joint_limits):
     '''Check if a joint position exceeds the joint limits.
     
     Arguments:
-      pos: posj joint position.
-      joint_limits: a list of lower and upper bound joint limits.
+        - position (posj): Joint position.
+        - joint_limits (list[tuple[int, int]]): a list of lower and upper bound 
+        joint limits.
       
     Returns:
-      bool.
+        - value (bool): True if all joint angles are within limits, else False.
     '''
-    for joint, (lower_limit, upper_limit) in zip(pos, joint_limits):
+    for joint, (lower_limit, upper_limit) in zip(joint_position, joint_limits):
         if not lower_limit < joint < upper_limit:
             return False
+        
     return True
 
 def matmul(A, B):
-    '''Multiply two matricies.
+    '''Multiply two matricies. Returns AxB.
+
+    Both A and B must be 2-dimensional array-like structures with an equal
+    number of elements in each row. Further, the number of columns in A must
+    be equal to the number of rows in B.
     
-    Arguments:
-      A: 2D Matrix.
-      B: 2D Matrix.
+    Parameters:
+        - A (array-like list of lists or similar): 2D Matrix.
+        - B (array-like list of lists or similar): 2D Matrix.
       
     Returns:
-      2D Matrix.
+        - matrix (list of lists): 2D Matrix of size A-rows x B-cols.
+
+    Exceptions:
+        - ValueError: If A and B are not array-like and their dimensions do not 
+        conform to the rules of matrix multiplication a ValueError is raised.
     '''
-    return [[sum(a*b for a, b in zip(A_row, B_col)) for B_col in zip(*B)] for A_row in A]
+    def array_like(array):
+        _iter = iter(array)
+        length = len(next(_iter))
+        if not all(len(row) == length for row in _iter):
+            return False
+        return True
+    
+    if not array_like(A) or not array_like(B):
+        raise ValueError("A and B must be array-like structures with an " \
+                         "equal number of elements in each row.")
+    if len(A[0]) != len(B):
+        raise ValueError("For matrix multiplication the number of columns in " \
+                         "A must be equal to the number of rows in B.")
+    
+    return [[sum(a*b for a, b in zip(row, col)) for col in zip(*B)] for row in A]
