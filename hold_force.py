@@ -1,4 +1,7 @@
-from time import sleep
+# If using DART-Studio don't copy-paste this line
+from DRL.DRL import *
+# -----------------------------------------------
+
 
 def hold(hold_force, axis, ref, hold_time, timeout, time_step):
     """Hold a force with the robot in the given axis, in the reference frame
@@ -31,18 +34,22 @@ def hold(hold_force, axis, ref, hold_time, timeout, time_step):
     max_force = 0
 
     while True:
-        measured = get_tool_force(ref)
-        current = measured[axis]
-        max_force = max(max_force, current)
-        if current >= hold_force:
+        measured_forces = get_tool_force(ref)
+        measured_axis_force = measured_forces[axis]
+        max_force = max(max_force, measured_axis_force)
+
+        if measured_axis_force >= hold_force:
             held_time += time_step
         else:
             timeout -= time_step
+
         if held_time >= hold_time:
             success = True
             break
+
         if timeout <= 0:
             break
-        sleep(time_step)
+
+        wait(time_step)
 
     return success, held_time, max_force
