@@ -14,7 +14,7 @@ def hold(hold_force, axis, ref, hold_time, timeout, time_step):
         - hold_time (float or int): The amount of time in seconds to hold.
         - timeout (float or int): The amount of time to allow before achieving 
         the required force.
-        - time_step (float or int): The often to evaluate the force in seconds.
+        - time_step (float or int): How often to evaluate the force in seconds.
     
     Returns:    
         - success (bool): Whether or not the function succeeded in holding the 
@@ -27,7 +27,7 @@ def hold(hold_force, axis, ref, hold_time, timeout, time_step):
              timeout=5.0, time_step=0.1)
             Tries to hold a 50 Neuton force in the Z axis relative to the world
             frame. Holds for 3 seconds. Allows 5 seconds to achieve the
-            required force. Checks 10 times a second.
+            required force. Checks 10 times a second, every 0.1 seconds.
     """
     success = False
     held_time = 0
